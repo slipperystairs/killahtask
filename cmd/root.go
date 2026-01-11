@@ -7,8 +7,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var flagValue string
-
 var rootCmd = &cobra.Command{
 	Use:   "killahtask",
 	Short: "Killah Task is a todo CLI tool.",

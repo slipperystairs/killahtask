@@ -6,13 +6,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
-
 var addCommand = &cobra.Command{
-	Use: "add",
-	Short: "Adds a new item",
+	Use:     "add",
+	Short:   "Adds a new item",
 	Aliases: []string{"a"},
-	Long: `This command will add a item to your list`,
-	Run: func(cmd *cobra.Command, args[]string) {
+	Long:    `This command will add a item to your list`,
+	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("This is where I will add your items")
 	},
 }
