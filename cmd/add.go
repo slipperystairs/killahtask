@@ -29,12 +29,18 @@ var addCommand = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		currUsr, err := user.Current()
 		checkError(err)
-		fmt.Printf("Curr user: %s\n", currUsr)
+		var earlyExit bool = false
 
 		if len(args) == 0 {
 			PrintUsageMsg("add", "add_none")
+			earlyExit = true
 		} else if len(args) > 1 {
 			PrintUsageMsg("add", "add_to_many")
+			earlyExit = true
+		}
+
+		if earlyExit {
+			os.Exit(1)
 		}
 
 		var fileExist bool = true
