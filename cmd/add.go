@@ -16,7 +16,7 @@ import (
 const WHICH_OS string = runtime.GOOS
 
 func GetNow() string {
-	return time.Now().Format(time.RFC3339)
+	return time.Now().UTC().Format(time.RFC3339)
 }
 
 // todo => We need to learn how to read everything in between double quotes i.e., "description"
