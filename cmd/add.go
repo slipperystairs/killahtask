@@ -19,13 +19,9 @@ func GetNow() string {
 	return time.Now().UTC().Format(time.RFC3339)
 }
 
-// todo => We need to learn how to read everything in between double quotes i.e., "description"
 // todo => Go get the encoding/csv package to learn how to write the CSV file
 // todo =>   - Two items cannot have the same description
 // todo =>   - Locking the file for writes, to avoid race conditions
-// todo => Figure out how we are going to handle the id's (prob have to read the last item in the file)
-// todo => Things to consider
-// todo =>   - Do we need to worry about the operating system using the CLI tool?
 var addCommand = &cobra.Command{
 	Use:     "add",
 	Short:   "Adds a new item",
