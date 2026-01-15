@@ -6,14 +6,11 @@ import (
 	"os"
 	"os/user"
 	"path/filepath"
-	"runtime"
 	"strconv"
 	"time"
 
 	"github.com/spf13/cobra"
 )
-
-const WHICH_OS string = runtime.GOOS
 
 func GetNow() string {
 	return time.Now().UTC().Format(time.RFC3339)
