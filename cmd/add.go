@@ -12,13 +12,50 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// func loadFile(filepath string) (*os.File, error) {
+// 	f, err := os.OpenFile(filepath, os.O_RDWR|os.O_CREATE, os.ModePerm)
+// 	if err != nil {
+// 		return nil, fmt.Errorf("failed to open file for reading")
+// 	}
+
+//     // Exclusive lock obtained on the file descriptor
+// 	if err := syscall.Flock(int(f.Fd()), syscall.LOCK_EX); err != nil {
+// 		_ = f.Close()
+// 		return nil, err
+// 	}
+
+// 	return f, nil
+// }
+
+// func closeFile(f *os.File) error {
+// 	syscall.Flock(int(f.Fd()), syscall.LOCK_UN)
+// 	return f.Close()
+// }
+
+func HasUniqueDescription(task string, records [][]string) bool {
+	var isUnique bool = true
+
+	for _, record := range records {
+		for _, r := range record {
+			if task == r {
+				isUnique = false
+				break
+			}
+		}
+
+		if !isUnique {
+			break
+		}
+	}
+
+	return isUnique
+}
+
 func GetNow() string {
 	return time.Now().UTC().Format(time.RFC3339)
 }
 
-// todo => Go get the encoding/csv package to learn how to write the CSV file
-// todo =>   - Two items cannot have the same description
-// todo =>   - Locking the file for writes, to avoid race conditions
+// todo => Locking the file for writes, to avoid race conditions
 var addCommand = &cobra.Command{
 	Use:     "add",
 	Short:   "Adds a new item",
@@ -84,6 +121,11 @@ var addCommand = &cobra.Command{
 				checkError(err)
 				newId := strconv.Itoa(lastId + 1)
 
+				if !HasUniqueDescription(args[0], records) {
+					fmt.Printf("Description isn't unique! \"%s\" already exist!\n", args[0])
+					os.Exit(1)
+				}
+
 				records = append(records, []string{newId, args[0], GetNow(), "false"})
 				// fmt.Printf("new records %v\n", records)
 				file, err := os.Create(filePath)
@@ -95,7 +137,8 @@ var addCommand = &cobra.Command{
 				checkError(csvWriter.Error())
 			}
 		}
-		fmt.Println("Record added successfully. Run \"killahtask list\" to see your task.")
+		//  To see your task run: \"killahtask list\" to see your task.
+		fmt.Println("Record added successfully!")
 	},
 }
 
