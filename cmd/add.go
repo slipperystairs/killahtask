@@ -7,32 +7,40 @@ import (
 	"os/user"
 	"path/filepath"
 	"strconv"
+	"syscall"
 	"time"
 
 	"github.com/spf13/cobra"
 )
 
-// func loadFile(filepath string) (*os.File, error) {
-// 	f, err := os.OpenFile(filepath, os.O_RDWR|os.O_CREATE, os.ModePerm)
-// 	if err != nil {
-// 		return nil, fmt.Errorf("failed to open file for reading")
-// 	}
+func writeCSV(file *os.File, records [][]string) {
+	w := csv.NewWriter(file)
+	w.WriteAll(records)
+	checkError(w.Error())
+}
 
-//     // Exclusive lock obtained on the file descriptor
-// 	if err := syscall.Flock(int(f.Fd()), syscall.LOCK_EX); err != nil {
-// 		_ = f.Close()
-// 		return nil, err
-// 	}
+func loadFile(filepath string) (*os.File, error) {
+	// Open or create file if it doesn't exist.
+	f, err := os.OpenFile(filepath, os.O_RDWR|os.O_CREATE, os.ModePerm)
+	if err != nil {
+		return nil, fmt.Errorf("Failed to open file for reading")
+	}
 
-// 	return f, nil
-// }
+	// Exclusive lock obtained on the file descriptor
+	if err := syscall.Flock(int(f.Fd()), syscall.LOCK_EX); err != nil {
+		_ = f.Close()
+		return nil, err
+	}
 
-// func closeFile(f *os.File) error {
-// 	syscall.Flock(int(f.Fd()), syscall.LOCK_UN)
-// 	return f.Close()
-// }
+	return f, nil
+}
 
-func HasUniqueDescription(task string, records [][]string) bool {
+func closeFile(f *os.File) error {
+	syscall.Flock(int(f.Fd()), syscall.LOCK_UN)
+	return f.Close()
+}
+
+func uniqueDescription(task string, records [][]string) bool {
 	var isUnique bool = true
 
 	for _, record := range records {
@@ -51,11 +59,10 @@ func HasUniqueDescription(task string, records [][]string) bool {
 	return isUnique
 }
 
-func GetNow() string {
+func Now() string {
 	return time.Now().UTC().Format(time.RFC3339)
 }
 
-// todo => Locking the file for writes, to avoid race conditions
 var addCommand = &cobra.Command{
 	Use:     "add",
 	Short:   "Adds a new item",
@@ -94,26 +101,21 @@ var addCommand = &cobra.Command{
 			fileExist = false
 		}
 
-		if !fileExist {
-			file, err := os.Create(filePath)
-			checkError(err)
-			defer file.Close()
+		file, err := loadFile(filePath)
+		defer closeFile(file)
+		checkError(err)
 
+		if !fileExist {
 			records := [][]string{
 				{"task_id", "description", "created", "completed"},
-				{"0", args[0], GetNow(), "false"},
+				{"0", args[0], Now(), "false"},
 			}
-			w := csv.NewWriter(file)
-			w.WriteAll(records)
-			checkError(w.Error())
+			writeCSV(file, records)
 		} else {
-			file, err := os.Open(filePath)
-			checkError(err)
 
 			csvReader := csv.NewReader(file)
 			// Read all the records from the CSV file
 			records, err := csvReader.ReadAll()
-			file.Close()
 			checkError(err)
 
 			if len(records) > 0 {
@@ -121,24 +123,17 @@ var addCommand = &cobra.Command{
 				checkError(err)
 				newId := strconv.Itoa(lastId + 1)
 
-				if !HasUniqueDescription(args[0], records) {
-					fmt.Printf("Description isn't unique! \"%s\" already exist!\n", args[0])
+				if !uniqueDescription(args[0], records) {
+					fmt.Printf("Task description isn't unique! \"%s\" already exist.\n", args[0])
 					os.Exit(1)
 				}
 
-				records = append(records, []string{newId, args[0], GetNow(), "false"})
-				// fmt.Printf("new records %v\n", records)
-				file, err := os.Create(filePath)
-				checkError(err)
-				defer file.Close()
-
-				csvWriter := csv.NewWriter(file)
-				csvWriter.WriteAll(records)
-				checkError(csvWriter.Error())
+				records = append(records, []string{newId, args[0], Now(), "false"})
+				writeCSV(file, records)
 			}
 		}
 		//  To see your task run: \"killahtask list\" to see your task.
-		fmt.Println("Record added successfully!")
+		fmt.Printf("Task \"%s\" added successfully!\n", args[0])
 	},
 }
 
