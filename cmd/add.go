@@ -7,6 +7,7 @@ import (
 	"os/user"
 	"path/filepath"
 	"strconv"
+	"strings"
 	"syscall"
 	"time"
 
@@ -76,7 +77,7 @@ var addCommand = &cobra.Command{
 		if len(args) == 0 {
 			PrintUsageMsg("add", "add_none")
 			earlyExit = true
-		} else if len(args) > 1 {
+		} else if len(args) > 1 { // A shitty way of making the user wrap their command in double quotes lol
 			PrintUsageMsg("add", "add_to_many")
 			earlyExit = true
 		}
@@ -85,6 +86,7 @@ var addCommand = &cobra.Command{
 			os.Exit(1)
 		}
 
+		var description string = strings.TrimSpace(args[0])
 		var fileExist bool = true
 		var fileName string = "killahtask_" + currUsr.Username + ".csv"
 		var filePath string = filepath.Join(currUsr.HomeDir, fileName)
@@ -102,7 +104,7 @@ var addCommand = &cobra.Command{
 		if !fileExist {
 			records := [][]string{
 				{"task_id", "description", "created", "completed"},
-				{"0", args[0], Now(), "false"},
+				{"0", description, Now(), "false"},
 			}
 			writeCSV(file, records)
 		} else {
@@ -117,17 +119,17 @@ var addCommand = &cobra.Command{
 				checkError(err)
 				newId := strconv.Itoa(lastId + 1)
 
-				if !uniqueDescription(args[0], records) {
-					fmt.Printf("Task description isn't unique! \"%s\" already exist.\n", args[0])
+				if !uniqueDescription(description, records) {
+					fmt.Printf("Task description isn't unique! \"%s\" already exist.\n", description)
 					os.Exit(1)
 				}
 
 				// Append the new record to the end of the slice.
-				records = append(records, []string{newId, args[0], Now(), "false"})
+				records = append(records, []string{newId, description, Now(), "false"})
 				writeCSV(file, records)
 			}
 		}
-		fmt.Printf("Task \"%s\" added successfully!\n", args[0])
+		fmt.Printf("Task \"%s\" added successfully!\n", description)
 	},
 }
 
