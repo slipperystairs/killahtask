@@ -50,6 +50,7 @@ var rootCmd = &cobra.Command{
 }
 
 var CurrentUser User
+
 func init() {
 	currUser, err := user.Current()
 	checkError(err)

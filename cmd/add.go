@@ -106,7 +106,6 @@ var addCommand = &cobra.Command{
 			}
 			writeCSV(file, records)
 		} else {
-
 			csvReader := csv.NewReader(file)
 			records, err := csvReader.ReadAll()
 			checkError(err)
@@ -126,8 +125,8 @@ var addCommand = &cobra.Command{
 				records = append(records, []string{newId, description, Now(), "false"})
 				// Since the file already exist the file pointer is at byte 0.
 				// Writing the file without truncating/seeking will duplicate header + rows.
-				file.Truncate(0) // Cuts the file down to byte making an empty file.
-				file.Seek(0, 0) // Moves the file pointer back to the beginning
+				file.Truncate(0)        // Cuts the file down to byte making an empty file.
+				file.Seek(0, 0)         // Moves the file pointer back to the beginning
 				writeCSV(file, records) // Re-write the file with the new records
 			}
 		}
