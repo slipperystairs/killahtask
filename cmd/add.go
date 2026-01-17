@@ -88,12 +88,14 @@ var addCommand = &cobra.Command{
 		var fileExist bool = true
 		var fileName string = "killahtask_" + currUsr.Username + ".csv"
 		var filePath string = filepath.Join(currUsr.HomeDir, fileName)
+		// os.OpenFile doesn't have a way of letting us know if the file already exist.
 		_, err = os.Stat(filePath)
 		if err != nil {
 			fileExist = false
 		}
 
 		file, err := loadFile(filePath)
+		// File will get closed even in the event of an error.
 		defer closeFile(file)
 		checkError(err)
 
@@ -106,11 +108,11 @@ var addCommand = &cobra.Command{
 		} else {
 
 			csvReader := csv.NewReader(file)
-			// Read all the records from the CSV file
 			records, err := csvReader.ReadAll()
 			checkError(err)
 
 			if len(records) > 0 {
+				// Get the last task_id used and increment it by one.
 				lastId, err := strconv.Atoi(records[len(records)-1][0])
 				checkError(err)
 				newId := strconv.Itoa(lastId + 1)
@@ -120,11 +122,11 @@ var addCommand = &cobra.Command{
 					os.Exit(1)
 				}
 
+				// Append the new record to the end of the slice.
 				records = append(records, []string{newId, args[0], Now(), "false"})
 				writeCSV(file, records)
 			}
 		}
-		//  To see your task run: \"killahtask list\" to see your task.
 		fmt.Printf("Task \"%s\" added successfully!\n", args[0])
 	},
 }
