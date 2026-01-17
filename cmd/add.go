@@ -69,14 +69,6 @@ var addCommand = &cobra.Command{
 	Aliases: []string{"a"},
 	Long:    `This command will add a item to your list`,
 	Run: func(cmd *cobra.Command, args []string) {
-		// now := time.Now()
-		// nowStr := now.Format(time.RFC3339)
-		// parsed, _ := time.Parse(time.RFC3339, nowStr)
-		// fmt.Printf("now %v\n", now)
-		// fmt.Printf("nowStr %s\n", nowStr)
-		// fmt.Printf("parsed %v\n", parsed)
-		// timeDiff := timediff.TimeDiff(parsed)
-		// fmt.Printf("difference: %v\n", timeDiff)
 		currUsr, err := user.Current()
 		checkError(err)
 		var earlyExit bool = false
