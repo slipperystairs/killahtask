@@ -44,6 +44,7 @@ var addCommand = &cobra.Command{
 		} else {
 			task.CheckError(err)
 		}
+		fmt.Printf("fileExist: %t\n", fileExist)
 
 		file, err := task.LoadFile(CurrentUser.Filepath)
 		// File will get closed even in the event of an error.
@@ -55,6 +56,7 @@ var addCommand = &cobra.Command{
 				{"task_id", "description", "created", "completed"},
 				{"0", description, Now(), "false"},
 			}
+			fmt.Println("in the made if")
 			err := task.WriteCSV(file, records)
 			task.CheckError(err)
 		} else {
@@ -74,7 +76,7 @@ var addCommand = &cobra.Command{
 				}
 
 				// Append the new record to the end of the slice.
-				records = append(records, []string{newId, description, Now(), "false"})
+				records = append(records, []string{newId, description, Now(), "true"})
 				err = task.WriteCSV(file, records) // Re-write the file with the new records
 				task.CheckError(err)
 			}
