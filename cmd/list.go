@@ -18,6 +18,7 @@ var headerMap = map[string]string{
 	"completed":   "Completed",
 }
 
+// The conditions where panic is called should never happen, but we might as well be prepared.
 func printRecords(w *tabwriter.Writer, records [][]string) {
 	header := records[0]
 	if len(header) != 4 {
