@@ -16,7 +16,7 @@ var completeCommand = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) > 1 {
 			command = "complete"
-			PrintMsg(&command, "comp_to_many")
+			PrintMsg(&command, "comp_too_many")
 		} else {
 			file, err := task.LoadFile(CurrentUser.Filepath)
 			defer task.CloseFile(file)
