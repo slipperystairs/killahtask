@@ -23,8 +23,9 @@ var deleteCommand = &cobra.Command{
 			csvReader := csv.NewReader(file)
 			records, err := csvReader.ReadAll()
 			task.CheckError(err)
-			newRecords := [][]string{}
 
+			// Create the new records from scratch
+			var newRecords [][]string
 			for _, rec := range records {
 				if rec[0] != args[0] {
 					newRecords = append(newRecords, rec)
