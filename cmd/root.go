@@ -31,10 +31,12 @@ func PrintMsg(command *string, msgCase string) {
 		fmt.Println("Missing task description.")
 	case "add_to_many":
 		fmt.Println("Too many arguments passed to the \"add\" command.")
-	case "comp_to_many":
+	case "comp_too_many":
 		fmt.Println("Too many arguments passed to the \"complete\" command.")
 	case "unknown_id":
 		fmt.Println("ID could not be found.")
+	case "delete_too_many":
+		fmt.Println("Too many arguments passed to the \"delete\" command.")
 	}
 
 	if command != nil {
