@@ -68,6 +68,8 @@ var addCommand = &cobra.Command{
 			records, err := csvReader.ReadAll()
 			task.CheckError(err)
 
+			// It is possible for the user to delete the only record and be left with just the headers
+			// If that is the case we reset the ID to 0.
 			if len(records) > 1 {
 				// Get the last task_id used and increment it by one.
 				lastId, err := strconv.Atoi(records[len(records)-1][0])
