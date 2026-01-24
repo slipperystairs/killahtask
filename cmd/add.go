@@ -78,7 +78,7 @@ var addCommand = &cobra.Command{
 			}
 
 			if !uniqueDescription(description, records) {
-				fmt.Printf("Task description isn't unique! \"%s\" already exist.\n", description)
+				fmt.Printf("Task description isn't unique! \"%s\" already exists.\n", description)
 				os.Exit(1)
 			}
 

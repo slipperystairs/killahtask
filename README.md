@@ -1,5 +1,5 @@
 # killahtask
-A simple TODO CLI tool for managing your task. The cobra package was used to create the CLI interface. Task are written to a CSV file in following header structure `task_id, description, created, completed`. The CSV file that `killahtask` reads/writes is locked to prevent concurrent access.
+A simple TODO CLI tool for managing your tasks. The Cobra package was used to create the CLI interface. Tasks are written to a CSV file in the following header structure `task_id, description, created, completed`. The CSV file that `killahtask` reads/writes is locked to prevent concurrent access.
 
 This CLI tool performs simple CRUD operations:
 ```
@@ -41,7 +41,7 @@ Use "killahtask [command] --help" for more information about a command.
 ```
 
 ## Add
-Running `killahtask add "my task"` will add a task to your to a CSV file in your home directory (not OS restricted). This command can get executed with an alias (i.e., `killahtask a "my task"`). Both will patterns will achieve the same thing.
+Add a task (aliases `add` or `a`):
 
 ```
 dilly@dilly:~$ killahtask add "my really cool task"
@@ -50,7 +50,7 @@ dilly@dilly:~$ killahtask a "some other really cool task"
 Task "some other really cool task" added successfully!
 ```
 
-Descriptions must be wrapped in double quotes. Otherwise the CLI will throw an error.
+Descriptions must be wrapped in double quotes:
 
 ```
 dilly@dilly:~$ killahtask a task without double quotes
@@ -62,11 +62,11 @@ Task descriptions must be unique.
 
 ```
 dilly@dilly:~$ killahtask a "some other really cool task"
-Task description isn't unique! "some other really cool task" already exist.
+Task description isn't unique! "some other really cool task" already exists.
 ```
 
 ## List
-By default the `list` command will display task that are not completed (i.e., "Completed" is set to `false`). This command has a sub flag called `--all` (short  hand: `-a`) that prints all task. 
+By default, list shows incomplete tasks. Use `--all (-a)` to show all tasks.
 
 **Default output:**
 ```
@@ -77,7 +77,7 @@ ID     Description                    Created
 3      My other thing                 an hour ago
 ```
 
-**Sub flag output:**
+**With `--all` output:**
 ```
 dilly@dilly:~$ killahtask list --all
 ID     Description                    Created         Completed
@@ -88,7 +88,7 @@ ID     Description                    Created         Completed
 ```
 
 ## Complete
-Marking a task complete will set the "Completed" value to true, indicating that you finished your task. Passing the `task_id` as an argument is required.
+Mark a task complete:
 ```
 dilly@dilly:~$ killahtask complete
 Task ID is missing!
@@ -107,7 +107,7 @@ ID     Description                    Created         Completed
 ```
 
 ## Delete
-A `task_id` must be passed as an argument is required for the `delete` command to succeed.
+Delete a task:
 ```
 dilly@dilly:~$ killahtask delete
 Task ID is missing!
@@ -124,7 +124,7 @@ ID     Description                    Created         Completed
 ``` 
 
 ## Tab Completion
-Cobra can generate completion scripts for most shells.
+Cobra can generate completion scripts for several shells.
 To enable completion:
 1. Generate a completion script for your shell:
 2. Source the file (or move it to your shell's completion directory).
