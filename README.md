@@ -76,7 +76,7 @@ ID     Description                    Created         Completed
 ```
 
 ## Delete
-This command will remove the task from your CSV file. A `task_id` must be passed as an argument is required for this command to succeed.
+This command will remove the task from your CSV file. A `task_id` must be passed as an argument is required for the command to succeed.
 ```
 dilly@dilly:~$ killahtask delete
 Task ID is missing!
@@ -91,4 +91,38 @@ ID     Description                    Created         Completed
 3      My other thing                 2 hours ago     true
 4      My other thing 2               2 hours ago     true
 ``` 
+
 ## Tab Completion
+Cobra can generate completion scripts for most shells.
+To enable completion:
+1. Generate a completion script for your shell:
+2. Source the file (or move it to your shell's completion directory).
+3. Restart your shell.
+
+Supported shells:
+- bash
+- zsh
+- fish
+- PowerShell
+
+**Linux example:**
+```bash
+# Install bash completion (Linux)
+sudo apt-get update
+sudo apt-get install bash-completion
+
+# Enable bash completion for this session
+source /etc/profile.d/bash_completion.sh
+
+# Generate completion script
+killahtask completion bash > ~/.killahtask_completion
+
+# Load completion immediately
+source ~/.killahtask_completion
+
+# (Optional) Load automatically in every new terminal
+echo "source ~/.killahtask_completion" >> ~/.bashrc
+
+# Example usage:
+# Type "killahtask c" then press TAB to complete to "complete"
+```
