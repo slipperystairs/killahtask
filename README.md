@@ -38,3 +38,5 @@ Task description isn't unique! "some other really cool task" already exist.
 ## Completed
 
 ## Delete
+
+## Tab Completion
