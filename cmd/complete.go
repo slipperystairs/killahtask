@@ -39,7 +39,7 @@ var completeCommand = &cobra.Command{
 				PrintMsg(nil, "unknown_id")
 			} else {
 				task.WriteCSV(file, records)
-				fmt.Printf("Task %s was marked as complete!\n", args[0])
+				fmt.Printf("ID %s was marked as complete!\n", args[0])
 			}
 		}
 	},
