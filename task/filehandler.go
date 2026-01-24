@@ -8,7 +8,7 @@ import (
 )
 
 func WriteCSV(file *os.File, records [][]string) error {
-	// Since the file already exist the file pointer is at byte 0.
+	// If the file already exist the file pointer is at byte 0.
 	// Writing the file without truncating/seeking will duplicate header + rows.
 	file.Truncate(0) // Cuts the file down to byte making an empty file.
 	file.Seek(0, 0)  // Moves the file pointer back to the beginning
