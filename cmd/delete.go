@@ -13,7 +13,10 @@ var deleteCommand = &cobra.Command{
 	Aliases: []string{"d"},
 	Short:   "Delete an item in your list",
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) > 1 {
+		if len(args) == 0 {
+			command = "delete"
+			PrintMsg(&command, "delete_none")
+		} else if len(args) > 1 {
 			PrintMsg(nil, "delete_too_many")
 		} else {
 			file, err := task.LoadFile(CurrentUser.Filepath)

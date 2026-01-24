@@ -31,10 +31,12 @@ func PrintMsg(command *string, msgCase string) {
 		fmt.Println("Missing task description.")
 	case "add_to_many":
 		fmt.Println("Too many arguments passed to the \"add\" command.")
+	case "comp_none", "delete_none":
+		fmt.Println("Task ID is missing!")
 	case "comp_too_many":
 		fmt.Println("Too many arguments passed to the \"complete\" command.")
 	case "unknown_id":
-		fmt.Println("ID could not be found.")
+		fmt.Println("Task ID could not be found.")
 	case "delete_too_many":
 		fmt.Println("Too many arguments passed to the \"delete\" command.")
 	}
@@ -43,8 +45,10 @@ func PrintMsg(command *string, msgCase string) {
 		switch *command {
 		case "add":
 			fmt.Println("Usage: killahtask add \"my description\"")
-		case "complete":
-			fmt.Println("Usage: killatask complete <taskid>")
+		case "delete", "complete":
+			fmt.Printf("Usage: killahtask %s <task_id>\n", *command)
+		case "list":
+			fmt.Println("Usage: killahtask list (optional: --all, -a)")
 		}
 	}
 }

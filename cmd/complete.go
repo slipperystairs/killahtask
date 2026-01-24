@@ -14,8 +14,10 @@ var completeCommand = &cobra.Command{
 	Aliases: []string{"c"},
 	Long:    `This command will complete and item on your list`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) > 1 {
-			command = "complete"
+		command = "complete"
+		if len(args) == 0 {
+			PrintMsg(&command, "comp_none")
+		} else if len(args) > 1 {
 			PrintMsg(&command, "comp_too_many")
 		} else {
 			file, err := task.LoadFile(CurrentUser.Filepath)
