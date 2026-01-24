@@ -58,7 +58,7 @@ var CurrentUser User
 var rootCmd = &cobra.Command{
 	Use:   "killahtask",
 	Short: "Killah Task is a todo CLI tool.",
-	Long:  `A todo task tool that does things`,
+	Long:  `A todo task tool that performs simple CRUD operations.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
 			fmt.Println("No commands were passed to the killah...see below")
