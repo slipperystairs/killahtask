@@ -1,5 +1,5 @@
 # killahtask
-A simple TODO CLI tool for managing your tasks. The Cobra package was used to create the CLI interface. Tasks are written to a CSV file in the following header structure `task_id, description, created, completed`. The CSV file that `killahtask` reads/writes is locked to prevent concurrent access.
+A simple TODO CLI tool for managing your tasks. The Cobra package was used to create the CLI interface. Tasks are written to a CSV file in the following header structure `task_id, description, created, completed`. The CSV file that `killahtask` reads/writes is locked to prevent concurrent access. The file gets created in your home directory: `~/killahtask_<username>.csv`
 
 This CLI tool performs simple CRUD operations:
 ```
