@@ -11,6 +11,7 @@ func CowSay(lines []string) {
 	longestLine := slices.MaxFunc(lines, func(a string, b string) int {
 		return len(a) - len(b)
 	})
+	// 4 and 2 are magic numbers that make the box look nice ¯\_(ツ)_/¯
 	boxWidth := len(longestLine) + 4
 	repeated := strings.Repeat("-", boxWidth-2)
 
