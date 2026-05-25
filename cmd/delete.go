@@ -2,8 +2,10 @@ package cmd
 
 import (
 	"encoding/csv"
+	"errors"
 	"fmt"
 
+	"github.com/slipperystairs/killahtask/cowsay"
 	"github.com/slipperystairs/killahtask/task"
 	"github.com/spf13/cobra"
 )
@@ -13,40 +15,55 @@ var deleteCommand = &cobra.Command{
 	Aliases: []string{"d"},
 	Short: "Deletes and item.",
 	Long:   "Delete an item in your list and recreates the items in the CSV file.",
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		if len(args) == 0 {
-			command = "delete"
-			PrintMsg(&command, "delete_none")
+			return errors.New("Task ID is missing!")
 		} else if len(args) > 1 {
-			PrintMsg(nil, "delete_too_many")
-		} else {
-			file, err := task.LoadFile(CurrentUser.Filepath)
-			defer task.CloseFile(file)
-			task.CheckError(err)
+			return errors.New("Too many arguments!")
+		}
 
-			csvReader := csv.NewReader(file)
-			records, err := csvReader.ReadAll()
-			task.CheckError(err)
+		file, err := task.LoadFile(CurrentUser.Filepath)
+		if err != nil {
+			return err
+		}
+		defer task.CloseFile(file)
 
-			// Create the new records from scratch
-			newRecords := [][]string{}
-			for _, rec := range records {
-				if rec[0] != args[0] {
-					newRecords = append(newRecords, rec)
-				}
-			}
+		csvReader := csv.NewReader(file)
+		records, err := csvReader.ReadAll()
+		if err != nil {
+			return err
+		}
 
-			if len(newRecords) == len(records) {
-				PrintMsg(nil, "unknown_id")
-			} else {
-				err = task.WriteCSV(file, newRecords)
-				task.CheckError(err)
-				fmt.Println("Task removed successfully!")
+		// Create the new records from scratch
+		newRecords := [][]string{}
+		for _, rec := range records {
+			if rec[0] != args[0] {
+				newRecords = append(newRecords, rec)
 			}
 		}
+
+		if len(newRecords) == len(records) {
+			return errors.New("Task ID could not be found.")
+		}
+
+		csvError := task.WriteCSV(file, newRecords)
+		if csvError != nil {
+			return csvError
+		}
+
+		msg := "Task " + args[0] + " removed successfully!"
+		if !cow {
+			fmt.Printf("%s\n", msg)
+		} else {
+			lines := []string{msg}
+			cowsay.CowSay(lines)
+		}
+
+		return nil
 	},
 }
 
 func init() {
+	deleteCommand.PersistentFlags().BoolVar(&cow, "cowsay", false, "Display output using cowsay")
 	rootCmd.AddCommand(deleteCommand)
 }

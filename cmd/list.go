@@ -118,7 +118,7 @@ var listCommand = &cobra.Command{
 			return tabwriterErr
 		}
 
-		if !Cow {
+		if !cow {
 			fmt.Println(buf.String())
 		} else {
 			lines := strings.Split(strings.TrimSuffix(buf.String(), "\n"), "\n")
@@ -131,6 +131,6 @@ var listCommand = &cobra.Command{
 
 func init() {
 	listCommand.Flags().BoolVarP(&showAll, "all", "a", false, "Shows all flag task items (alias: -a)")
-	listCommand.PersistentFlags().BoolVar(&Cow, "cowsay", false, "Display output using Cowsay")
+	listCommand.PersistentFlags().BoolVar(&cow, "cowsay", false, "Display output using Cowsay")
 	rootCmd.AddCommand(listCommand)
 }

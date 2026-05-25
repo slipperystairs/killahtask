@@ -9,7 +9,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var Cow bool
+var cow bool
 type User struct {
 	Username *user.User
 	Filename string
@@ -26,33 +26,6 @@ func uniqueDescription(task string, records [][]string) bool {
 	return true
 }
 
-func PrintMsg(command *string, msgCase string) {
-	switch msgCase {
-	case "missing_task":
-		fmt.Println("Missing task description.")
-	case "comp_none", "delete_none":
-		fmt.Println("Task ID is missing!")
-	case "comp_too_many":
-		fmt.Println("Too many arguments passed to the \"complete\" command.")
-	case "unknown_id":
-		fmt.Println("Task ID could not be found.")
-	case "delete_too_many":
-		fmt.Println("Too many arguments passed to the \"delete\" command.")
-	}
-
-	if command != nil {
-		switch *command {
-		case "add":
-			fmt.Println("Usage: killahtask add \"my description\"")
-		case "delete", "complete":
-			fmt.Printf("Usage: killahtask %s <task_id>\n", *command)
-		case "list":
-			fmt.Println("Usage: killahtask list (optional: --all, -a)")
-		}
-	}
-}
-
-var command string
 var CurrentUser User
 var rootCmd = &cobra.Command{
 	Use:   "killahtask",
@@ -69,8 +42,7 @@ var rootCmd = &cobra.Command{
 func init() {
 	currUser, err := user.Current()
 	task.CheckError(err)
-
-	rootCmd.PersistentFlags().Bool("cowsay", false, "Use Cowsay to display output")
+	rootCmd.PersistentFlags().Bool("cowsay", false, "Display output using cowsay")
 
 	CurrentUser = User{
 		Username: currUser,

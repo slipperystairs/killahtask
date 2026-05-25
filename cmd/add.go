@@ -96,17 +96,18 @@ var addCommand = &cobra.Command{
 			}
 		}
 
-		if !Cow {
+		if !cow {
 			fmt.Printf("%s\n", successMsg)
 		} else {
 			lines := []string{successMsg}
 			cowsay.CowSay(lines)
 		}
+
 		return nil
 	},
 }
 
 func init() {
-	addCommand.PersistentFlags().BoolVar(&Cow, "cowsay", false, "Display output using Cowsay")
+	addCommand.PersistentFlags().BoolVar(&cow, "cowsay", false, "Display output using Cowsay")
 	rootCmd.AddCommand(addCommand)
 }
