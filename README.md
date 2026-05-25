@@ -3,7 +3,7 @@ A simple TODO CLI tool for managing your tasks. The Cobra package was used to cr
 
 This CLI tool performs simple CRUD operations:
 ```
-dilly@dilly:~$ killahtask add "my really cool task"
+dilly@dilly:~$ killahtask add my really cool task
 dill@dilly:~$ killahtask list
 dilly@dilly:~$ killahtask complete <task_id>
 dilly@dilly:~$ killahtask delete <task_id>
