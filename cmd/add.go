@@ -14,8 +14,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var cow bool
-
 func Now() string {
 	return time.Now().UTC().Format(time.RFC3339)
 }
@@ -26,18 +24,17 @@ var addCommand = &cobra.Command{
 	Aliases: []string{"a"},
 	Long:    `Adds a task to your list of TODOs by creating or updating your ~/killahtask_<username>.csv file.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		earlyExit := false
 		if len(args) == 0 {
-			command = "add"
-			PrintMsg(&command, "missing_task")
-			earlyExit = true
-		}
-
-		if earlyExit {
-			os.Exit(1)
+			err := errors.New("Missing task description")
+			return err
 		}
 
 		description := strings.TrimSpace(strings.Join(args, " "))
+		if len(description) > 50 {
+			tooLong := "Description length is limited to 50 characters"
+			return errors.New(tooLong)
+		}
+
 		successMsg := fmt.Sprintf("\"%s\" added successfully!", description)
 		// os.OpenFile doesn't have a way of letting us know if the file already exist.
 		fileInfo, err := os.Stat(CurrentUser.Filepath)
@@ -99,7 +96,7 @@ var addCommand = &cobra.Command{
 			}
 		}
 
-		if !cow {
+		if !Cow {
 			fmt.Printf("%s\n", successMsg)
 		} else {
 			lines := []string{successMsg}
@@ -110,6 +107,6 @@ var addCommand = &cobra.Command{
 }
 
 func init() {
-	addCommand.PersistentFlags().BoolVar(&cow, "cowsay", false, "Display output using Cowsay")
+	addCommand.PersistentFlags().BoolVar(&Cow, "cowsay", false, "Display output using Cowsay")
 	rootCmd.AddCommand(addCommand)
 }

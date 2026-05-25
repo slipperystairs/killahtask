@@ -2,17 +2,22 @@ package cmd
 
 import (
 	"encoding/csv"
+	"errors"
 	"fmt"
-	"os"
+	"strings"
 	"text/tabwriter"
 	"time"
 
 	"github.com/mergestat/timediff"
+	"github.com/slipperystairs/killahtask/cowsay"
 	"github.com/slipperystairs/killahtask/task"
 	"github.com/spf13/cobra"
 )
 
-var showAll bool
+var (
+	showAll bool
+	buf strings.Builder
+)
 
 var headerMap = map[string]string{
 	"task_id":     "ID",
@@ -32,11 +37,10 @@ func timeDiff(rec string) string {
 }
 
 // The conditions where panic is called should never happen, but we might as well be prepared.
-func printRecords(w *tabwriter.Writer, records [][]string, all bool) {
+func buildTable(w *tabwriter.Writer, records [][]string, all bool) error {
 	header := records[0]
 	if len(header) != 4 {
-		fmt.Fprintln(os.Stderr, "Invalid task file format")
-		return
+		return errors.New("Invalid task file format")
 	}
 
 	if !all {
@@ -56,11 +60,14 @@ func printRecords(w *tabwriter.Writer, records [][]string, all bool) {
 
 	for _, rec := range records[1:] {
 		if len(rec) != 4 {
-			fmt.Fprintln(os.Stderr, "Invalid task record format")
-			return
+			return errors.New("Invalid task record format")
 		}
 
 		diff := timeDiff(rec[2])
+		if diff == "invalid time" {
+			return errors.New("Invalid time format passed to the timediff parser")
+		}
+
 		// If the sub flag is passed then we show the "Completed" column and all of the task
 		if !all && rec[3] != "true" {
 			fmt.Fprintf(w, "%s\t%s\t%s\n",
@@ -77,33 +84,53 @@ func printRecords(w *tabwriter.Writer, records [][]string, all bool) {
 			)
 		}
 	}
+
+	return nil
 }
 
 var listCommand = &cobra.Command{
 	Use:     "list",
 	Aliases: []string{"l"},
 	Short:   "List the items in your list",
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		file, err := task.LoadFile(CurrentUser.Filepath)
-		task.CheckError(err)
+		if err != nil {
+			return err
+		}
 		defer task.CloseFile(file)
 
 		reader := csv.NewReader(file)
 		records, err := reader.ReadAll()
-		task.CheckError(err)
-
-		if len(records) == 0 {
-			fmt.Println("No task to show! Try adding a task by running killahtask add \"my task\"")
-		} else {
-			w := tabwriter.NewWriter(os.Stdout, 0, 4, 5, ' ', 0)
-			defer w.Flush()
-			printRecords(w, records, showAll)
+		if err != nil {
+			return err
 		}
 
+		if len(records) == 0 {
+			str := "No task to show! Try adding a task by running killahtask add \"my task\""
+			return errors.New(str)
+		}
+
+		w := tabwriter.NewWriter(&buf, 0, 4, 5, ' ', 0)
+		tabwriterErr := buildTable(w, records, showAll)
+		w.Flush()
+
+		if tabwriterErr != nil {
+			return tabwriterErr
+		}
+
+		if !Cow {
+			fmt.Println(buf.String())
+		} else {
+			lines := strings.Split(strings.TrimSuffix(buf.String(), "\n"), "\n")
+			cowsay.CowSay(lines)
+		}
+
+		return nil
 	},
 }
 
 func init() {
 	listCommand.Flags().BoolVarP(&showAll, "all", "a", false, "Shows all flag task items (alias: -a)")
+	listCommand.PersistentFlags().BoolVar(&Cow, "cowsay", false, "Display output using Cowsay")
 	rootCmd.AddCommand(listCommand)
 }

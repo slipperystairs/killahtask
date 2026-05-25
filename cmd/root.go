@@ -9,6 +9,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var Cow bool
 type User struct {
 	Username *user.User
 	Filename string
