@@ -44,24 +44,16 @@ Use "killahtask [command] --help" for more information about a command.
 Add a task (aliases `add` or `a`):
 
 ```
-dilly@dilly:~$ killahtask add "my really cool task"
+dilly@dilly:~$ killahtask add my really cool task
 Task "my really cool task" added successfully!
-dilly@dilly:~$ killahtask a "some other really cool task"
+dilly@dilly:~$ killahtask a some other really cool task
 Task "some other really cool task" added successfully!
-```
-
-Descriptions must be wrapped in double quotes:
-
-```
-dilly@dilly:~$ killahtask a task without double quotes
-Too many arguments passed to the "add" command
-Usage: killahtask add "my description"
 ```
 
 Task descriptions must be unique.
 
 ```
-dilly@dilly:~$ killahtask a "some other really cool task"
+dilly@dilly:~$ killahtask a some other really cool task
 Task description isn't unique! "some other really cool task" already exists.
 ```
 
@@ -91,11 +83,6 @@ ID     Description                    Created         Completed
 Mark a task complete:
 ```
 dilly@dilly:~$ killahtask complete
-Task ID is missing!
-Usage: killahtask complete <task_id>
-dilly@dilly:~$ killahtask complete 123 123
-Too many arguments passed to the "complete" command.
-Usage: killahtask complete <task_id>
 dilly@dilly:~$ killahtask complete 4
 ID 4 was marked as complete!
 dilly@dilly:~$ killahtask list -a
@@ -109,11 +96,6 @@ ID     Description                    Created         Completed
 ## Delete
 Delete a task:
 ```
-dilly@dilly:~$ killahtask delete
-Task ID is missing!
-Usage: killahtask delete <task_id>
-dilly@dilly:~$ killahtask delete 12903 123
-Too many arguments passed to the "delete" command.
 dilly@dilly:~$ killahtask delete 0
 Task removed successfully!
 dilly@dilly:~$ killahtask list -a
@@ -122,6 +104,55 @@ ID     Description                    Created         Completed
 3      My other thing                 2 hours ago     true
 4      My other thing 2               2 hours ago     true
 ``` 
+
+## Cowsay
+The `add`, `list`, `complete`, and `delete` commands have a `--cowsay` subcommand that will display the output using `cowsay`.
+```
+dilly@dilly:~/projects/killahtask$ killahtask add "Do nothing" --cowsay
+ ----------------------------------
+| "Do nothing" added successfully! |
+ ----------------------------------
+        \   ^__^
+         \  (oo)\_______
+            (__)\       )\/\
+                ||----w |
+                ||     ||
+
+dilly@dilly:~/projects/killahtask$ killahtask list --all --cowsay
+ ---------------------------------------------------------------
+| ID     Description            Created               Completed |
+| 0      Take out the trash     2 minutes ago         false     |
+| 1      Go to sleep            2 minutes ago         false     |
+| 2      Write some code        a minute ago          false     |
+| 3      Walk dog               a minute ago          false     |
+| 4      Do nothing             a few seconds ago     false     |
+ ---------------------------------------------------------------
+        \   ^__^
+         \  (oo)\_______
+            (__)\       )\/\
+                ||----w |
+                ||     ||
+
+dilly@dilly:~/projects/killahtask$ killahtask complete 0 --cowsay
+ ------------------------------
+| ID 0 was marked as complete! |
+ ------------------------------
+        \   ^__^
+         \  (oo)\_______
+            (__)\       )\/\
+                ||----w |
+                ||     ||
+
+dilly@dilly:~/projects/killahtask$ killahtask delete  0 --cowsay
+ ------------------------------
+| Task 0 removed successfully! |
+ ------------------------------
+        \   ^__^
+         \  (oo)\_______
+            (__)\       )\/\
+                ||----w |
+                ||     ||
+```
 
 ## Tab Completion
 Cobra can generate completion scripts for several shells.
