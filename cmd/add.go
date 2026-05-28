@@ -24,14 +24,12 @@ var addCommand = &cobra.Command{
 	Long:    `Adds a task to your list of TODOs by creating or updating your ~/killahtask_<username>.csv file.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if len(args) == 0 {
-			err := errors.New("Missing task description")
-			return err
+			return errors.New("Missing task description")
 		}
 
 		description := strings.TrimSpace(strings.Join(args, " "))
 		if len(description) > 50 {
-			tooLong := "Description length is limited to 50 characters"
-			return errors.New(tooLong)
+			return errors.New("Description length is limited to 50 characters")
 		}
 
 		successMsg := fmt.Sprintf("\"%s\" added successfully!", description)
@@ -41,6 +39,8 @@ var addCommand = &cobra.Command{
 
 		// We check the file size because I ran into a bug during development where my file existed but it was empty.
 		// Treat it like a new file when the user falls into this case for whatever reason.
+		// TODO => Do more testing around this area to see if we can clean it up a bit.
+		// TODO => If not, lets add some more comments to explain our decision here because it reads a little weird.
 		hasData := fileExists && fileInfo.Size() > 0
 		if err != nil && !os.IsNotExist(err) {
 			return err
@@ -67,6 +67,7 @@ var addCommand = &cobra.Command{
 			newId := "0"
 			csvReader := csv.NewReader(file)
 			records, err := csvReader.ReadAll()
+			// TODO => This is where we would check if our map has records before call uniqueDescription()
 			if err != nil {
 				return err
 			}

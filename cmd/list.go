@@ -25,14 +25,16 @@ var headerMap = map[string]string{
 	"completed":   "Completed",
 }
 
-// Parse the time string using the RFC3339 standard i.e., "2026-01-020T15:04:05Z07:00"
-// returns the difference in human readable format.
+// Parse the time string using the RFC3339 standard i.e., "2026-01-020T15:04:05Z07:00".
+// Convert into local time and returns the difference in human readable format.
 func timeDiff(rec string) string {
 	parsed, err := time.Parse(time.RFC3339, rec)
 	if err != nil {
 		return "invalid time"
 	}
-	return timediff.TimeDiff(parsed)
+	localTime := parsed.Local()
+
+	return timediff.TimeDiff(localTime)
 }
 
 // The conditions where panic is called should never happen, but we might as well be prepared.

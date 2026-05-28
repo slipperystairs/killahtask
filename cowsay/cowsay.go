@@ -11,13 +11,13 @@ func CowSay(lines []string) {
 	longestLine := slices.MaxFunc(lines, func(a string, b string) int {
 		return len(a) - len(b)
 	})
-	// 4 and 2 are magic numbers that make the box look nice ¯\_(ツ)_/¯
-	boxWidth := len(longestLine) + 4
-	repeated := strings.Repeat("-", boxWidth-2)
+	// 2 accounts for the extra space an pipe
+	boxWidth := len(longestLine)
+	repeated := strings.Repeat("-", boxWidth+2)
 
 	fmt.Printf(" %s \n", repeated)
 	for _, line := range lines {
-		padLen := boxWidth - 4 - len(line)
+		padLen := boxWidth - len(line)
 		if padLen < 0 {
 			padLen = 0
 		}
