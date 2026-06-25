@@ -19,6 +19,7 @@ var deleteCommand = &cobra.Command{
 		} else if len(args) > 1 {
 			return errors.New("Too many arguments!")
 		}
+		cmd.SilenceUsage = true
 
 		file, err := task.LoadFile(CurrentUser.Filepath)
 		if err != nil {
@@ -58,5 +59,6 @@ var deleteCommand = &cobra.Command{
 
 func init() {
 	deleteCommand.PersistentFlags().BoolVar(&cow, "cowsay", false, "Display output using cowsay")
+	deleteCommand.PersistentFlags().BoolVar(&chode, "chodesay", false, "Display output as a chode")
 	rootCmd.AddCommand(deleteCommand)
 }

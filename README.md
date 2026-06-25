@@ -30,12 +30,13 @@ Available Commands:
   add         Adds a new item
   complete    Completes an item on the list
   completion  Generate completion script
-  delete      Delete an item in your list
+  delete      Deletes and item.
   help        Help about any command
   list        List the items in your list
 
 Flags:
-  -h, --help   help for killahtask
+      --cowsay   Display output using cowsay
+  -h, --help     help for killahtask
 
 Use "killahtask [command] --help" for more information about a command.
 ```

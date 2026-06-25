@@ -34,6 +34,7 @@ var addCommand = &cobra.Command{
 		if len(args) == 0 {
 			return errors.New("Missing task description")
 		}
+		cmd.SilenceUsage = true
 
 		description := strings.TrimSpace(strings.Join(args, " "))
 		if len(description) > 50 {
@@ -112,5 +113,6 @@ var addCommand = &cobra.Command{
 
 func init() {
 	addCommand.PersistentFlags().BoolVar(&cow, "cowsay", false, "Display output using Cowsay")
+	addCommand.PersistentFlags().BoolVar(&chode, "chodesay", false, "Display output as a chode")
 	rootCmd.AddCommand(addCommand)
 }

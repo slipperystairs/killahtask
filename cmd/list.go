@@ -94,6 +94,8 @@ var listCommand = &cobra.Command{
 	Aliases: []string{"l"},
 	Short:   "List the items in your list",
 	RunE: func(cmd *cobra.Command, args []string) error {
+		cmd.SilenceUsage = true
+
 		file, err := task.LoadFile(CurrentUser.Filepath)
 		if err != nil {
 			return err
@@ -119,8 +121,8 @@ var listCommand = &cobra.Command{
 			return tabwriterErr
 		}
 
-		split := false
-		if cow {
+		split := chode
+		if cow || chode {
 			split = true
 		}
 		checkCowsay(buf.String(), split)
@@ -132,5 +134,6 @@ var listCommand = &cobra.Command{
 func init() {
 	listCommand.Flags().BoolVarP(&showAll, "all", "a", false, "Shows all flag task items (alias: -a)")
 	listCommand.PersistentFlags().BoolVar(&cow, "cowsay", false, "Display output using Cowsay")
+	listCommand.PersistentFlags().BoolVar(&chode, "chodesay", false, "Display output as a chode")
 	rootCmd.AddCommand(listCommand)
 }
