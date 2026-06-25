@@ -2,16 +2,19 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 	"os/user"
 	"path/filepath"
 	"strings"
 
 	"github.com/slipperystairs/killahtask/cowsay"
+	"github.com/slipperystairs/killahtask/chodesay"
 	"github.com/slipperystairs/killahtask/task"
 	"github.com/spf13/cobra"
 )
 
 var cow bool
+var chode bool
 var descriptions = make(map[string]bool)
 
 type User struct {
@@ -30,13 +33,18 @@ func uniqueDescription(task string) bool {
 func checkCowsay(message string, split bool) {
 	lines := []string{message}
 
-	if !cow {
-		fmt.Printf("%s\n", message)
-	} else {
+	if cow {
 		if split {
 			lines = strings.Split(strings.TrimSuffix(buf.String(), "\n"), "\n")
 		}
 		cowsay.CowSay(lines)
+	} else if chode {
+		if split {
+			lines = strings.Split(strings.TrimSuffix(buf.String(), "\n"), "\n")
+		}
+		chodesay.ChodeSay(lines)
+	} else {
+			fmt.Printf("%s\n", message)
 	}
 }
 
@@ -55,8 +63,9 @@ var rootCmd = &cobra.Command{
 
 func init() {
 	currUser, err := user.Current()
-	task.CheckError(err)
+	task.MaybeDieAboutIt(err)
 	rootCmd.PersistentFlags().Bool("cowsay", false, "Display output using cowsay")
+	rootCmd.PersistentFlags().Bool("chodesay", false, "Display output as a chode")
 
 	CurrentUser = User{
 		Username: currUser,
@@ -67,5 +76,7 @@ func init() {
 
 func Execute() {
 	err := rootCmd.Execute()
-	task.CheckError(err)
+	if err != nil {
+		os.Exit(0)
+	}
 }

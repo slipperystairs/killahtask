@@ -24,7 +24,7 @@ func WriteCSV(file *os.File, records [][]string) error {
 
 func LoadFile(filepath string) (*os.File, error) {
 	// Open or create file if it doesn't exist.
-	f, err := os.OpenFile(filepath, os.O_RDWR|os.O_CREATE, os.ModePerm)
+	f, err := os.OpenFile(filepath, os.O_RDWR|os.O_CREATE, os.ModePerm & 0666)
 	if err != nil {
 		return nil, fmt.Errorf("Failed to open file for reading")
 	}

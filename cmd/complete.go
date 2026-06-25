@@ -19,6 +19,7 @@ var completeCommand = &cobra.Command{
 		} else if len(args) > 1 {
 			return errors.New("Too many arguments!")
 		}
+		cmd.SilenceUsage = true
 
 		file, err := task.LoadFile(CurrentUser.Filepath)
 		if err != nil {
@@ -33,11 +34,13 @@ var completeCommand = &cobra.Command{
 		}
 
 		found := false
-		for _, rec := range records[1:] {
-			if rec[0] == args[0] {
-				rec[3] = "true"
-				found = true
-				break
+		if len(records) > 0 {
+			for _, rec := range records[1:] {
+				if rec[0] == args[0] {
+					rec[3] = "true"
+					found = true
+					break
+				}
 			}
 		}
 
@@ -59,5 +62,6 @@ var completeCommand = &cobra.Command{
 
 func init() {
 	completeCommand.PersistentFlags().BoolVar(&cow, "cowsay", false, "Display output using Cowsay")
+	completeCommand.PersistentFlags().BoolVar(&chode, "chodesay", false, "Display output as a chode")
 	rootCmd.AddCommand(completeCommand)
 }

@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-func CheckError(e error) {
+func MaybeDieAboutIt(e error) {
 	if e != nil {
 		fmt.Fprintln(os.Stderr, e)
 		os.Exit(1)
